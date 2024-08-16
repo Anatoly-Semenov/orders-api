@@ -1,0 +1,41 @@
+image: docker
+services:
+  - docker:dind
+
+stages:
+  - test
+  - deploy
+
+test:
+  image: node:10-alpine
+  stage: test
+  only:
+    - development
+    # - main
+  script:
+    - echo "** Start package install **"
+    - npm i
+    - echo "** Start app unit tests **"
+    - npm run test
+
+production:
+  stage: deploy
+  only:
+    - main
+  before_script:
+    - apk add openssh-client # Add SSH client for alpine
+    - eval $(ssh-agent -s) # Run the SSH client
+    # Adding environment's variable SSH_PRIVATE_KEY to the SSH client's agent that manages the private keys
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    # Create the SSH directory and give it the right permissions
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+  script:
+    - echo "Deploying application..."
+    # Connecting to the server using SSH and executing commands like pulling updates to the cloned repo
+    - ssh -o StrictHostKeyChecking=no root@api.qbplatform.com "cd qbp-backend && git pull && docker stop qbpnest && docker rm qbpnest && docker rmi qbpnest && docker-compose up -d --build"
+    # -o StrictHostKeyCheking=no is to disable strict host key checking in SSH
+    # - docker-compose down
+    # - docker-compose up -d backend
+    - echo "Application successfully deployed."
+  when: manual
