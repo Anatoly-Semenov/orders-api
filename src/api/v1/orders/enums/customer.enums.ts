@@ -1,0 +1,16 @@
+export enum ECustomerSocials {
+	INSTAGRAM = 'instagram',
+	VK = 'vk',
+	TELEGRAM = 'telegram',
+	WHATSAPP = 'whatsapp',
+	VIBER = 'viber',
+	LINKEDIN = 'linkedin',
+	FACEBOOK = 'facebook',
+	FACEBOOK_MESSANGER = 'facebookMessanger',
+	TIKTOK = 'tiktok',
+	SKYPE = 'skype',
+	PINTEREST = 'pinterest',
+	YOUTUBE = 'youtube',
+	SNAPCHAT = 'snapchat',
+	TWITTER = 'twitter',
+}
